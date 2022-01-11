@@ -7,26 +7,36 @@
 
 import UIKit
 
+// MARK: - ConfettiShape
+
 enum ConfettiShape {
     case rectangle
     case circle
 }
+
+// MARK: - ConfettiPosition
 
 enum ConfettiPosition {
     case foreground
     case background
 }
 
+// MARK: - ConfettiType
+
 class ConfettiType {
-    let color: UIColor
-    let shape: ConfettiShape
-    let position: ConfettiPosition
-    
+    // MARK: Lifecycle
+
     init(color: UIColor, shape: ConfettiShape, position: ConfettiPosition) {
         self.color = color
         self.shape = shape
         self.position = position
     }
+
+    // MARK: Internal
+
+    let color: UIColor
+    let shape: ConfettiShape
+    let position: ConfettiPosition
     
     lazy var name = UUID().uuidString
     
@@ -56,28 +66,18 @@ class ConfettiType {
     }()
 }
 
+// MARK: - XSConfettiView
+
 class XSConfettiView: UIView {
-    lazy var confettiTypes: [ConfettiType] = {
-        let confettiColors = [
-            (r:149,g:58,b:255), (r:255,g:195,b:41), (r:255,g:101,b:26),
-            (r:123,g:92,b:255), (r:76,g:126,b:255), (r:71,g:192,b:255),
-            (r:255,g:47,b:39), (r:255,g:91,b:134), (r:233,g:122,b:208),
-        ].map { UIColor(red: $0.r / 255.0, green: $0.g / 255.0, blue: $0.b / 255.0, alpha: 1) }
-        
-        return [ConfettiPosition.foreground, ConfettiPosition.background].flatMap { position in
-            return [ConfettiShape.rectangle, ConfettiShape.circle].flatMap { shape in
-                return confettiColors.map { color in
-                    return ConfettiType(color: color, shape: shape, position: position)
-                }
-            }
-        }
-    }()
+    // MARK: Lifecycle
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.layer.addSublayer(foregroundConfettiLayer)
-        addBehaviors(to: foregroundConfettiLayer)
-        addAnimations(to: foregroundConfettiLayer)
+        for layer in [foregroundConfettiLayer, backgroundConfettiLayer] {
+            self.layer.addSublayer(layer)
+            addBehaviors(to: layer)
+            addAnimations(to: layer)
+        }
         isUserInteractionEnabled = false
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { [weak self] in
@@ -85,12 +85,46 @@ class XSConfettiView: UIView {
         }
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: Internal
+
+    lazy var confettiTypes: [ConfettiType] = {
+        let confettiColors = [
+            (r: 149, g: 58, b: 255), (r: 255, g: 195, b: 41), (r: 255, g: 101, b: 26),
+            (r: 123, g: 92, b: 255), (r: 76, g: 126, b: 255), (r: 71, g: 192, b: 255),
+            (r: 255, g: 47, b: 39), (r: 255, g: 91, b: 134), (r: 233, g: 122, b: 208),
+        ].map { UIColor(red: $0.r / 255.0, green: $0.g / 255.0, blue: $0.b / 255.0, alpha: 1) }
+        
+        return [ConfettiPosition.foreground, ConfettiPosition.background].flatMap { position in
+            [ConfettiShape.rectangle, ConfettiShape.circle].flatMap { shape in
+                confettiColors.map { color in
+                    ConfettiType(color: color, shape: shape, position: position)
+                }
+            }
+        }
+    }()
+
+    lazy var foregroundConfettiLayer = createConfettiLayer()
     
+    lazy var backgroundConfettiLayer: CAEmitterLayer = {
+        let emitterLayer = createConfettiLayer()
+        
+        for emitterCell in emitterLayer.emitterCells ?? [] {
+            emitterCell.scale = 0.5
+        }
+
+        emitterLayer.opacity = 0.5
+        emitterLayer.speed = 0.95
+        
+        return emitterLayer
+    }()
+
     func createConfettiCells() -> [CAEmitterCell] {
-        return self.confettiTypes.map { type in
+        return confettiTypes.map { type in
             let cell = CAEmitterCell()
             cell.name = type.name
             
@@ -118,10 +152,10 @@ class XSConfettiView: UIView {
         
         emitterLayer.birthRate = 0
         emitterLayer.emitterCells = createConfettiCells()
-        emitterLayer.emitterPosition = CGPoint(x: self.bounds.midX, y: self.bounds.minY - self.bounds.size.width / 5)
-        emitterLayer.emitterSize = CGSize(width: self.bounds.size.width / 5, height: self.bounds.size.width / 5)
+        emitterLayer.emitterPosition = CGPoint(x: bounds.midX, y: bounds.minY - bounds.size.width / 5)
+        emitterLayer.emitterSize = CGSize(width: bounds.size.width / 5, height: bounds.size.width / 5)
         emitterLayer.emitterShape = .sphere
-        emitterLayer.frame = self.bounds
+        emitterLayer.frame = bounds
         
         emitterLayer.beginTime = CACurrentMediaTime()
         return emitterLayer
@@ -130,7 +164,7 @@ class XSConfettiView: UIView {
     func createBehavior(type: String) -> NSObject {
         let behaviorClass = NSClassFromString("CAEmitterBehavior") as! NSObject.Type
         let behaviorWithType = behaviorClass.method(for: NSSelectorFromString("behaviorWithType:"))!
-        let castedBehaviorWithType = unsafeBitCast(behaviorWithType, to: (@convention(c)(Any?, Selector, Any?) -> NSObject).self)
+        let castedBehaviorWithType = unsafeBitCast(behaviorWithType, to: (@convention(c) (Any?, Selector, Any?) -> NSObject).self)
         return castedBehaviorWithType(behaviorClass, NSSelectorFromString("behaviorWithType"), type)
     }
     
@@ -168,7 +202,7 @@ class XSConfettiView: UIView {
         layer.setValue([
             horizontalWaveBehavior(),
             verticalWaveBehavior(),
-            attractorBehavior(for: layer)
+            attractorBehavior(for: layer),
         ], forKey: "emitterBehaviors")
     }
     
@@ -212,7 +246,7 @@ class XSConfettiView: UIView {
         animation.fromValue = 0
         animation.toValue = 2
 
-        layer.add(animation, forKey:  "emitterBehaviors.drag.drag")
+        layer.add(animation, forKey: "emitterBehaviors.drag.drag")
     }
     
     func addGravityAnimation(to layer: CALayer) {
@@ -225,19 +259,4 @@ class XSConfettiView: UIView {
             layer.add(animation, forKey: "emitterCells.\(image.name).yAcceleration")
         }
     }
-    
-    lazy var foregroundConfettiLayer = createConfettiLayer()
-    
-    lazy var backgroundConfettiLayer: CAEmitterLayer = {
-        let emitterLayer = createConfettiLayer()
-        
-        for emitterCell in emitterLayer.emitterCells ?? [] {
-            emitterCell.scale = 0.5
-        }
-
-        emitterLayer.opacity = 0.5
-        emitterLayer.speed = 0.95
-        
-        return emitterLayer
-    }()
 }
