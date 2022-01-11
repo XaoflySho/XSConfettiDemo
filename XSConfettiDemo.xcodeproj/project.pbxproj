@@ -13,6 +13,7 @@
 		17EF81D5278D292900717B95 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17EF81D3278D292900717B95 /* Main.storyboard */; };
 		17EF81D7278D292E00717B95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17EF81D6278D292E00717B95 /* Assets.xcassets */; };
 		17EF81DA278D292E00717B95 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17EF81D8278D292E00717B95 /* LaunchScreen.storyboard */; };
+		17EF81E2278D298700717B95 /* XSConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EF81E1278D298700717B95 /* XSConfettiView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		17EF81D6278D292E00717B95 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17EF81D9278D292E00717B95 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		17EF81DB278D292E00717B95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		17EF81E1278D298700717B95 /* XSConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XSConfettiView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				17EF81CD278D292900717B95 /* AppDelegate.swift */,
 				17EF81CF278D292900717B95 /* SceneDelegate.swift */,
 				17EF81D1278D292900717B95 /* ViewController.swift */,
+				17EF81E1278D298700717B95 /* XSConfettiView.swift */,
 				17EF81D3278D292900717B95 /* Main.storyboard */,
 				17EF81D6278D292E00717B95 /* Assets.xcassets */,
 				17EF81D8278D292E00717B95 /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 			files = (
 				17EF81D2278D292900717B95 /* ViewController.swift in Sources */,
 				17EF81CE278D292900717B95 /* AppDelegate.swift in Sources */,
+				17EF81E2278D298700717B95 /* XSConfettiView.swift in Sources */,
 				17EF81D0278D292900717B95 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

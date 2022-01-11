@@ -14,6 +14,9 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
 
-
+    @IBAction func buttonClick(_ sender: UIButton) {
+        let confettiView = XSConfettiView(frame: self.view.bounds)
+        self.view.addSubview(confettiView)
+    }
 }
 
