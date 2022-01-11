@@ -78,6 +78,7 @@ class XSConfettiView: UIView {
         self.layer.addSublayer(foregroundConfettiLayer)
         addBehaviors(to: foregroundConfettiLayer)
         addAnimations(to: foregroundConfettiLayer)
+        isUserInteractionEnabled = false
     }
     
     required init?(coder: NSCoder) {
