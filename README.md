@@ -1,6 +1,6 @@
 # XSConfettiDemo
 
-![Screenshots]()
+![Screenshots](./Gifs/Screenshots.gif)
 
 
 
