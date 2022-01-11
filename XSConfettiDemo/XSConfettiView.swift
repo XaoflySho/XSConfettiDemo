@@ -79,6 +79,10 @@ class XSConfettiView: UIView {
         addBehaviors(to: foregroundConfettiLayer)
         addAnimations(to: foregroundConfettiLayer)
         isUserInteractionEnabled = false
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { [weak self] in
+            self?.removeFromSuperview()
+        }
     }
     
     required init?(coder: NSCoder) {

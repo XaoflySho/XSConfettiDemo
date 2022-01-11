@@ -16,6 +16,7 @@ class ViewController: UIViewController {
 
     @IBAction func buttonClick(_ sender: UIButton) {
         let confettiView = XSConfettiView(frame: self.view.bounds)
+        confettiView.clipsToBounds = true
         self.view.addSubview(confettiView)
     }
 }
