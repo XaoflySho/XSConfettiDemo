@@ -172,6 +172,11 @@ class XSConfettiView: UIView {
         return emitterLayer
     }
     
+    /*
+     Returns a new CAEmitterBehavior with the given name.
+     
+     Originally from https://bryce.co/caemitterbehavior/
+     */
     func createBehavior(type: String) -> NSObject {
         let behaviorClass = NSClassFromString("CAEmitterBehavior") as! NSObject.Type
         let behaviorWithType = behaviorClass.method(for: NSSelectorFromString("behaviorWithType:"))!
@@ -240,6 +245,7 @@ class XSConfettiView: UIView {
         addAttractorAnimation(to: layer)
         addBirthrateAnimation(to: layer)
         addGravityAnimation(to: layer)
+        addDragAnimation(to: layer)
     }
     
     func dragBehavior() -> Any {
