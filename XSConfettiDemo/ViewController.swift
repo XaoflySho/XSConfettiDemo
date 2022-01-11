@@ -9,15 +9,18 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    var confettiView: XSConfettiView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        let confettiView = XSConfettiView(frame: self.view.bounds)
+        confettiView.clipsToBounds = true
+        self.confettiView = confettiView
+        self.view.addSubview(confettiView)
     }
 
     @IBAction func buttonClick(_ sender: UIButton) {
-        let confettiView = XSConfettiView(frame: self.view.bounds)
-        confettiView.clipsToBounds = true
-        self.view.addSubview(confettiView)
+        confettiView?.startAnimating()
     }
 }
 

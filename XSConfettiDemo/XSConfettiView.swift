@@ -73,21 +73,24 @@ class XSConfettiView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        for layer in [foregroundConfettiLayer, backgroundConfettiLayer] {
-            self.layer.addSublayer(layer)
-            addBehaviors(to: layer)
-            addAnimations(to: layer)
-        }
         isUserInteractionEnabled = false
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { [weak self] in
-            self?.removeFromSuperview()
-        }
     }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: Public
+
+    public func startAnimating() {
+        for layer in [createForegroundConfettiLayer(), createBackgroundConfettiLayer()] {
+            self.layer.addSublayer(layer)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+                print("Remove layer: \(layer)")
+                layer.removeFromSuperlayer()
+            }
+        }
     }
 
     // MARK: Internal
@@ -108,9 +111,15 @@ class XSConfettiView: UIView {
         }
     }()
 
-    lazy var foregroundConfettiLayer = createConfettiLayer()
+    func createForegroundConfettiLayer() -> CAEmitterLayer {
+        let emitterLayer = createConfettiLayer()
+        
+        addBehaviors(to: emitterLayer)
+        addAnimations(to: emitterLayer)
+        return emitterLayer
+    }
     
-    lazy var backgroundConfettiLayer: CAEmitterLayer = {
+    func createBackgroundConfettiLayer() -> CAEmitterLayer {
         let emitterLayer = createConfettiLayer()
         
         for emitterCell in emitterLayer.emitterCells ?? [] {
@@ -120,8 +129,10 @@ class XSConfettiView: UIView {
         emitterLayer.opacity = 0.5
         emitterLayer.speed = 0.95
         
+        addBehaviors(to: emitterLayer)
+        addAnimations(to: emitterLayer)
         return emitterLayer
-    }()
+    }
 
     func createConfettiCells() -> [CAEmitterCell] {
         return confettiTypes.map { type in
@@ -229,7 +240,6 @@ class XSConfettiView: UIView {
         addAttractorAnimation(to: layer)
         addBirthrateAnimation(to: layer)
         addGravityAnimation(to: layer)
-        addDragAnimation(to: layer)
     }
     
     func dragBehavior() -> Any {
